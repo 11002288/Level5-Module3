@@ -1,6 +1,7 @@
 package _02_Chat_Application;
 
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
@@ -13,8 +14,9 @@ import _00_Click_Chat.networking.Server;
 
 public class ChatApp extends JFrame {
 	JTextField test = new JTextField();
+	JLabel label = new JLabel();
 	Server server;
-	Client client;
+	ClientG client;
 
 	public static void main(String[] args) {
 		new ChatApp();
@@ -27,7 +29,7 @@ public class ChatApp extends JFrame {
 			setTitle("SERVER");
 			JOptionPane.showMessageDialog(null, "Server started at: " + server.getIPAddress() + "\nPort: " + server.getPort());
 			test.addActionListener(e -> {
-				server.notify();
+			
 			});
 			add(test);
 			setVisible(true);
@@ -39,15 +41,15 @@ public class ChatApp extends JFrame {
 			String ipStr = JOptionPane.showInputDialog("Enter the IP Address");
 			String prtStr = JOptionPane.showInputDialog("Enter the port number");
 			int port = Integer.parseInt(prtStr);
-			client = new Client(ipStr,port);
+			client = new ClientG(ipStr,port);
 			test.addActionListener(e -> {
-				server.notify();
+				System.out.println(label.getText());
 			});
 			add(test);
 			setVisible(true);
 			setSize(400, 300);
 			setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-			server.start();
+			client.start();
 			
 		}
 	}
