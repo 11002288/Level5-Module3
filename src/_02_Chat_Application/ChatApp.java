@@ -15,7 +15,7 @@ import _00_Click_Chat.networking.Server;
 public class ChatApp extends JFrame {
 	JTextField test = new JTextField();
 	JLabel label = new JLabel();
-	Server server;
+	ServerG server;
 	ClientG client;
 
 	public static void main(String[] args) {
@@ -25,11 +25,11 @@ public class ChatApp extends JFrame {
 	public ChatApp() {
 		int response = JOptionPane.showConfirmDialog(null, "Would you like to host a connection?", "Buttons!", JOptionPane.YES_NO_OPTION);
 		if(response == JOptionPane.YES_OPTION){
-			server = new Server(8080);
+			server = new ServerG(8080);
 			setTitle("SERVER");
 			JOptionPane.showMessageDialog(null, "Server started at: " + server.getIPAddress() + "\nPort: " + server.getPort());
 			test.addActionListener(e -> {
-			
+			server.sendClick();
 			});
 			add(test);
 			setVisible(true);
@@ -43,7 +43,7 @@ public class ChatApp extends JFrame {
 			int port = Integer.parseInt(prtStr);
 			client = new ClientG(ipStr,port);
 			test.addActionListener(e -> {
-				System.out.println(label.getText());
+				client.sendClick();
 			});
 			add(test);
 			setVisible(true);

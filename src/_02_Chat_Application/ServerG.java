@@ -1,100 +1,75 @@
 package _02_Chat_Application;
 
-import java.net.*;
+import java.io.EOFException;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.InetAddress;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.net.UnknownHostException;
 
 import javax.swing.JOptionPane;
 
-import java.io.*;
+public class ServerG {
+	private int port;
 
-public class ServerG extends Thread {
-	// 1. Create an object of the ServerSocket class
-	ServerSocket socket;
+	private ServerSocket server;
+	private Socket connection;
 
-	public ServerG() throws IOException {
-		// 2. Initialize the ServerSocket object. In the parameters,
-		// you must define the port at which the server will listen for connections.
-		socket = new ServerSocket(8081);
-		// *OPTIONAL* you can set a time limit for the server to wait by using the
-		// ServerSocket's setSoTimeout(int timeInMilliSeconds) method
-		socket.setSoTimeout(10000000);
+	ObjectOutputStream os;
+	ObjectInputStream is;
+
+	public ServerG(int port) {
+		this.port = port;
 	}
 
-	public void run() {
-		// 3. Create a boolean variable and initialize it to true.
-		Boolean truth = new Boolean(true);
-		// 4. Make a while loop that continues looping as long as the boolean created in
-		// the previous step is true.
-		while (truth == true) {
-
-		
-		// 5. Make a try-catch block that checks for two types Exceptions:
-		// SocketTimeoutException and IOException.
-		// Put steps 8 - 15 in the try block.
+	public void start(){
 		try {
+			server = new ServerSocket(port, 100);
 
-			// TODO: handle exception
+			connection = server.accept();
 
-			// 8. Let the user know that the server is waiting for a client to connect.
-			JOptionPane.showConfirmDialog(null, "Waiting for client");
-			// 9. Create an object of the Socket class and initialize it to
-			// serverSocket.accept();
-			// Change serverSocket to match the ServerSocket member variable you created in
-			// step 1.
-			// The program will wait her until either a client connects or the timeout
-			// expires.
-			Socket monkey = socket.accept();
-			// 10. Let the user know that the client has connected.
-			JOptionPane.showConfirmDialog(null, "User has connected");
+			os = new ObjectOutputStream(connection.getOutputStream());
+			is = new ObjectInputStream(connection.getInputStream());
 
-			// 11. Create a DataInputStream object. When initializing it, use the Socket
-			// object you created in step 9 to call the getInputStream() method.
-			DataInputStream DPInput = new DataInputStream(monkey.getInputStream());
+			os.flush();
 
-			// 12. Print the message from the DataInputStream object using the readUTF()
-			// method
-			DPInput.readUTF();
+			while (connection.isConnected()) {
+				try {
+					JOptionPane.showMessageDialog(null, is.readObject());
+					System.out.println(is.readObject());
+				}catch(EOFException e) {
+					JOptionPane.showMessageDialog(null, "Connection Lost");
+					System.exit(0);
+				}
+			}
 
-			// 13. Create a DataOutputStream object. When initializing it, use the Server
-			// object you created in step 9 to call the getOutputStream() method.
-			DataOutputStream DOStream = new DataOutputStream(monkey.getOutputStream());
-
-			// 14. Use the DataOutputStream object to send a message to the client using the
-			// writeUTF(String message) method.
-			DOStream.writeUTF("message testing 2");
-
-			// 15. Close the client server
-			socket.close();
-			// 6. If the program catches a SockeTimeoutException, let the user know about it
-			// and set loop's boolean variable to false.
-		} catch (SocketTimeoutException e) {
-			truth = false;
-			JOptionPane.showConfirmDialog(null, "SocketTimeoutException");
-			// 7. If the program catches a IOException, let the user know about it and set
-			// the loop's boolean variable to false.
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			truth = false;
-			JOptionPane.showConfirmDialog(null, "IOException");
-		}
-
-	}}
-
-	public static void main(String[] args) {
-		// 16. In a new thread, create an object of the ServerGreeter class and start
-		// the thread. Don't forget the try-catch.
-		try {
-			Thread test = new ServerG();
-			test.start();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
+	
 	public String getIPAddress() {
 		try {
 			return InetAddress.getLocalHost().getHostAddress();
 		} catch (UnknownHostException e) {
 			return "ERROR!!!!!";
+		}
+	}
+
+	public int getPort() {
+		return port;
+	}
+
+	public void sendClick() {
+		try {
+			if (os != null) {
+				os.writeObject("CLICK SENT FROM SERVER");
+				os.flush();
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 }
