@@ -29,7 +29,7 @@ public class ChatApp extends JFrame {
 			setTitle("SERVER");
 			JOptionPane.showMessageDialog(null, "Server started at: " + server.getIPAddress() + "\nPort: " + server.getPort());
 			test.addActionListener(e -> {
-			server.sendClick();
+			server.sendClick("why");
 			});
 			add(test);
 			setVisible(true);
@@ -43,7 +43,7 @@ public class ChatApp extends JFrame {
 			int port = Integer.parseInt(prtStr);
 			client = new ClientG(ipStr,port);
 			test.addActionListener(e -> {
-				client.sendClick();
+				client.sendClick("hello");
 			});
 			add(test);
 			setVisible(true);

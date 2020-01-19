@@ -50,10 +50,10 @@ public class ClientG {
 		}
 	}
 	
-	public void sendClick() {
+	public void sendClick(String test) {
 		try {
 			if (os != null) {
-				os.writeObject("CLICK SENT FROM CLIENT");
+				os.writeObject("Message test"+test);
 				os.flush();
 			}
 		} catch (IOException e) {
